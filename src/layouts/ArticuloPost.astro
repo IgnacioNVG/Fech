@@ -1,0 +1,411 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ContentImage from '../components/ContentImage.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import type { ImageMetadata } from 'astro';
+
+type Props = Omit<CollectionEntry<'articulos'>['data'], 'heroImage'> & {
+    heroImage?: ImageMetadata | string;
+};
+
+const { title, description, heroImage, author, affiliation, category } = Astro.props;
+const currentArticleId = decodeURIComponent(
+    Astro.url.pathname.replace(/^\/articulos\//, '').replace(/\/$/, ''),
+);
+
+const posts = (await getCollection('articulos'))
+    .filter((post) => post.id !== currentArticleId)
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+    .slice(0, 6);
+---
+
+<html lang="es">
+    <head>
+        <BaseHead title={title} description={description} />
+        <style>
+            :global(body) {
+                overflow-x: hidden;
+            }
+
+            main {
+                width: min(1240px, calc(100% - 2rem));
+                margin: 0 auto;
+                padding: clamp(1.5rem, 4vw, 3rem) 0 4rem;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 340px;
+                gap: clamp(2rem, 5vw, 4rem);
+                align-items: start;
+            }
+
+            article {
+                min-width: 0;
+            }
+
+            .hero-image {
+                width: 100%;
+                aspect-ratio: 2 / 1;
+                margin-bottom: 2rem;
+                background: #f5f5f5;
+                border: 2px solid #111;
+                border-radius: 8px;
+                box-shadow: 4px 4px 0px 0px #111;
+                overflow: hidden;
+                -webkit-mask-image: -webkit-radial-gradient(white, black);
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .hero-image:hover {
+                transform: translate(-3px, -3px);
+                box-shadow: 6px 6px 0px 0px #ff0000;
+                border-color: #ff0000;
+            }
+
+            .hero-image :global(img),
+            .hero-image img {
+                width: 100%;
+                height: 100%;
+                display: block;
+                object-fit: cover;
+                object-position: center;
+                border-radius: 0;
+                transform: scale(1.01);
+                transition: transform 0.3s ease;
+            }
+
+            .hero-image:hover :global(img),
+            .hero-image:hover img {
+                transform: scale(1.04);
+            }
+
+            .header-content {
+                border-top: 0.45rem solid #111;
+                border-bottom: 2px solid #111;
+                padding: 0.75rem 0 2rem;
+                margin-bottom: 3rem;
+            }
+
+            .article-category {
+                display: inline-block;
+                background: #111;
+                color: #fff;
+                padding: 0.18rem 0.5rem;
+                font-family: monospace;
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                font-weight: bold;
+            }
+
+            .article-title {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(2.2rem, 5vw, 4.2rem);
+                text-transform: uppercase;
+                line-height: 0.9;
+                margin: 1rem 0;
+                max-width: 12ch;
+                color: #111;
+            }
+
+            .article-meta {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                border-top: 1px solid #111;
+                border-bottom: 1px solid #111;
+                padding: 0.85rem 0;
+                font-family: monospace;
+                text-transform: uppercase;
+                gap: 1rem;
+                font-size: 0.78rem;
+            }
+
+            .article-author {
+                font-weight: bold;
+                color: #ff0000;
+            }
+
+            .article-affiliation {
+                color: #666;
+                text-align: right;
+            }
+
+            .article-description {
+                font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+                font-style: italic;
+                margin: 1.5rem 0 0;
+                line-height: 1.35;
+                color: #333;
+                max-width: 42rem;
+            }
+
+            .prose {
+                font-size: 1.12rem;
+                line-height: 1.7;
+                color: #222;
+            }
+
+            .prose :global(p) {
+                margin-bottom: 1.6em;
+            }
+
+            .prose :global(a) {
+                color: #111;
+                text-decoration: none;
+                border-bottom: 2px solid #111;
+            }
+
+            .prose :global(a:hover) {
+                color: #ff0000;
+                border-color: #ff0000;
+            }
+
+            .prose :global(blockquote) {
+                border-left: 4px solid #ff1321;
+                background: #fff;
+                padding: 1rem 1.25rem;
+                font-size: 1.2rem;
+            }
+
+            .sidebar {
+                position: sticky;
+                top: 2rem;
+                max-height: calc(100vh - 3rem);
+                display: flex;
+                flex-direction: column;
+                min-height: 0;
+            }
+
+            .sidebar-title {
+                font-family: 'Sifonn', sans-serif;
+                font-size: 1.3rem;
+                text-transform: uppercase;
+                line-height: 1;
+                border-top: 0.45rem solid #111;
+                margin: 0 0 1.25rem;
+                padding-top: 0.5rem;
+                color: #111;
+            }
+
+            .sidebar-list {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                overflow-y: auto;
+                overscroll-behavior: contain;
+                padding: 0 0.5rem 0.5rem 0;
+                scrollbar-width: thin;
+                scrollbar-color: #111 transparent;
+            }
+
+            .sidebar-list::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            .sidebar-list::-webkit-scrollbar-track {
+                background: transparent;
+            }
+
+            .sidebar-list::-webkit-scrollbar-thumb {
+                background: #111;
+                border-radius: 999px;
+            }
+
+            .sidebar-item {
+                text-decoration: none;
+                color: inherit;
+                display: grid;
+                grid-template-columns: 108px minmax(0, 1fr);
+                gap: 1rem;
+                align-items: start;
+                border-bottom: 1px solid #111;
+                padding-bottom: 1rem;
+            }
+
+            .sidebar-item:hover {
+                border-color: #ff0000;
+            }
+
+            .sidebar-media-box {
+                position: relative;
+                aspect-ratio: 1 / 1;
+                background: #f5f5f5;
+                border: 2px solid #111;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .sidebar-date {
+                background: #000;
+                color: #fff;
+                font-family: monospace;
+                font-size: 0.6rem;
+                padding: 0.2rem 0.45rem;
+                text-transform: uppercase;
+                line-height: 1;
+                position: absolute;
+                left: 0;
+                bottom: 0;
+                z-index: 2;
+                transition: background 0.2s;
+            }
+
+            .sidebar-media-box :global(img) {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                border-radius: 0;
+                transform: scale(1.01);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar-item:hover .sidebar-date {
+                background: #ff0000;
+            }
+
+            .sidebar-item:hover .sidebar-media-box :global(img) {
+                transform: scale(1.06);
+            }
+
+            .sidebar-text {
+                padding: 0;
+            }
+
+            .sidebar-text h4 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: 0.95rem;
+                text-transform: uppercase;
+                margin: 0;
+                line-height: 1.1;
+                color: #111;
+                transition: color 0.2s;
+            }
+
+            .sidebar-meta {
+                display: flex;
+                flex-direction: column;
+                gap: 0.2rem;
+                margin-top: 0.5rem;
+                font-family: monospace;
+                font-size: 0.68rem;
+                text-transform: uppercase;
+            }
+
+            .sidebar-author {
+                color: #ff0000;
+                font-weight: bold;
+            }
+
+            .sidebar-category {
+                color: #777;
+            }
+
+            .sidebar-item:hover h4 {
+                color: #ff0000;
+            }
+
+            @media (max-width: 960px) {
+                main {
+                    grid-template-columns: 1fr;
+                }
+
+                .sidebar {
+                    position: static;
+                    margin-top: 2rem;
+                    max-height: none;
+                }
+
+                .sidebar-list {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    overflow: visible;
+                    padding-right: 0;
+                }
+
+                .sidebar-item {
+                    grid-template-columns: 96px minmax(0, 1fr);
+                }
+            }
+
+            @media (max-width: 640px) {
+                .article-title {
+                    max-width: none;
+                }
+
+                .article-meta {
+                    flex-direction: column;
+                }
+
+                .article-affiliation {
+                    text-align: left;
+                }
+
+                .sidebar-list {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <Header />
+        <main>
+            <article>
+                {heroImage && (
+                    <div class="hero-image">
+                        {typeof heroImage === 'string' ? (
+                            <img src={heroImage} alt="" loading="eager" decoding="sync" />
+                        ) : (
+                            <ContentImage src={heroImage} alt="" width={960} priority />
+                        )}
+                    </div>
+                )}
+
+                <header class="header-content">
+                    {category && <span class="article-category">{category}</span>}
+                    <h1 class="article-title">{title}</h1>
+                    <div class="article-meta">
+                        <span class="article-author">Por {author || 'Redacción Chelén'}</span>
+                        <span class="article-affiliation">{affiliation}</span>
+                    </div>
+                    <p class="article-description">{description}</p>
+                </header>
+
+                <div class="prose">
+                    <slot />
+                </div>
+            </article>
+
+            <aside class="sidebar">
+                <h3 class="sidebar-title">Otras Lecturas</h3>
+                <div class="sidebar-list">
+                    {posts.map((post) => (
+                        <a href={`/articulos/${post.id}/`} class="sidebar-item">
+                            <div class="sidebar-media-box">
+                                <div class="sidebar-date">
+                                    <FormattedDate date={post.data.pubDate} />
+                                </div>
+                                {post.data.heroImage && (
+                                    <ContentImage src={post.data.heroImage} alt="" width={360} />
+                                )}
+                            </div>
+                            <div class="sidebar-text">
+                                <h4>{post.data.title}</h4>
+                                <div class="sidebar-meta">
+                                    <span class="sidebar-author">{post.data.author || 'Redacción'}</span>
+                                    {post.data.category && (
+                                        <span class="sidebar-category">— {post.data.category}</span>
+                                    )}
+                                </div>
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            </aside>
+        </main>
+        <Footer />
+    </body>
+</html>

@@ -1,0 +1,352 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_TITLE } from '../consts';
+
+// Directorio de Centros de Estudiantes Federados por Campus/Facultad
+const centrosFederados = [
+    {
+        sigla: "CEI",
+        nombre: "Centro de Estudiantes de Ingeniería",
+        facultad: "Facultad de Ciencias Físicas y Matemáticas",
+        campus: "Campus Beauchef",
+        color: "#005b96",
+        link: "#"
+    },
+    {
+        sigla: "CED",
+        nombre: "Centro de Estudiantes de Derecho",
+        facultad: "Facultad de Derecho",
+        campus: "Campus Andrés Bello",
+        color: "#800020",
+        link: "#"
+    },
+    {
+        sigla: "CEM",
+        nombre: "Centro de Estudiantes de Medicina",
+        facultad: "Facultad de Medicina",
+        campus: "Campus Norte",
+        color: "#008080",
+        link: "#"
+    },
+    {
+        sigla: "CEFAU",
+        nombre: "Centro de Estudiantes de Arquitectura y Urbanismo",
+        facultad: "Facultad de Arquitectura y Urbanismo",
+        campus: "Campus Andrés Bello",
+        color: "#6a0dad",
+        link: "#"
+    },
+    {
+        sigla: "CEIC",
+        nombre: "Centro de Estudiantes de Ingeniería Comercial",
+        facultad: "Facultad de Economía y Negocios (FEN)",
+        campus: "Campus Andrés Bello",
+        color: "#e5a93b",
+        link: "#"
+    },
+    {
+        sigla: "CEFH",
+        nombre: "Centro de Estudiantes de Filosofía y Humanidades",
+        facultad: "Facultad de Filosofía y Humanidades",
+        campus: "Campus Juan Gómez Millas",
+        color: "#d9534f",
+        link: "#"
+    },
+    {
+        sigla: "CECO",
+        nombre: "Centro de Estudiantes de la Comunicación",
+        facultad: "Facultad de Comunicación e Imagen (FCEI)",
+        campus: "Campus Juan Gómez Millas",
+        color: "#ff4500",
+        link: "#"
+    },
+    {
+        sigla: "CEAP",
+        nombre: "Centro de Estudiantes de Administración Pública",
+        facultad: "Facultad de Gobierno",
+        campus: "Campus Andrés Bello",
+        color: "#2f4f4f",
+        link: "#"
+    },
+    {
+        sigla: "CEIA",
+        nombre: "Centro de Estudiantes de Ing. Agrónoma",
+        facultad: "Facultad de Ciencias Agronómicas",
+        campus: "Campus Sur (Antumapu)",
+        color: "#2e8b57",
+        link: "#"
+    },
+    {
+        sigla: "CEV",
+        nombre: "Centro de Estudiantes de Ciencias Veterinarias",
+        facultad: "Facultad de Ciencias Veterinarias y Pecuarias",
+        campus: "Campus Sur",
+        color: "#556b2f",
+        link: "#"
+    },
+    {
+        sigla: "CEO",
+        nombre: "Centro de Estudiantes de Odontología",
+        facultad: "Facultad de Odontología",
+        campus: "Campus Norte",
+        color: "#4682b4",
+        link: "#"
+    },
+    {
+        sigla: "CEQ",
+        nombre: "Centro de Estudiantes de Química y Farmacia",
+        facultad: "Facultad de Ciencias Químicas y Farmacéuticas",
+        campus: "Campus Norte",
+        color: "#8a2be2",
+        link: "#"
+    },
+    {
+        sigla: "CEICien",
+        nombre: "Centro de Estudiantes de Ciencias",
+        facultad: "Facultad de Ciencias",
+        campus: "Campus Juan Gómez Millas",
+        color: "#008000",
+        link: "#"
+    }
+];
+
+// Campus únicos para filtrado
+const campusList = [...new Set(centrosFederados.map(c => c.campus))];
+---
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <BaseHead title={`Centros Federados | ${SITE_TITLE}`} description="Directorio oficial de los Centros de Estudiantes Federados de la FECh" />
+        <style>
+            :global(body) {
+                overflow-x: hidden;
+            }
+
+            main {
+                width: 100%;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: clamp(2rem, 8vw, 4rem) 5%;
+                box-sizing: border-box;
+            }
+
+            /* Títulos */
+            h2 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(2.2rem, 7vw, 4rem);
+                text-transform: uppercase;
+                line-height: 0.85;
+                margin-bottom: 2rem;
+                color: #000;
+            }
+
+            .subtitle-kicker {
+                font-family: monospace;
+                font-size: 0.85rem;
+                text-transform: uppercase;
+                color: #666;
+                letter-spacing: 0.1em;
+                margin-bottom: 0.5rem;
+                display: block;
+            }
+
+            .intro-box {
+                border-left: 10px solid #000;
+                padding: clamp(1.5rem, 4vw, 2rem);
+                background: #f4f4f4;
+                margin-bottom: 3rem;
+                font-family: monospace;
+                font-size: 1.1rem;
+                border-top: 2px solid #111;
+                border-right: 2px solid #111;
+                border-bottom: 2px solid #111;
+                box-shadow: 4px 4px 0px #111;
+                border-radius: 4px;
+            }
+
+            /* Filtros de Campus */
+            .filter-band {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.75rem;
+                margin-bottom: 3rem;
+                border-bottom: 2px solid #111;
+                padding-bottom: 1.5rem;
+            }
+
+            .filter-btn {
+                background: #fff;
+                border: 2px solid #111;
+                padding: 0.45rem 1rem;
+                font-family: monospace;
+                font-size: 0.75rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                cursor: pointer;
+                border-radius: 4px;
+                transition: all 0.2s ease;
+            }
+
+            .filter-btn.active, .filter-btn:hover {
+                background: #ff0000;
+                color: #fff;
+                border-color: #ff0000;
+                transform: translateY(-2px);
+                box-shadow: 2px 2px 0px #111;
+            }
+
+            /* Grilla Brutalista de Centros */
+            .centros-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 2.2rem;
+            }
+
+            .centro-card {
+                background: #fff;
+                border: 2px solid #111;
+                border-radius: 8px;
+                box-shadow: 4px 4px 0px #111;
+                padding: 2rem;
+                text-decoration: none;
+                color: inherit;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                min-height: 220px;
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .centro-card.hidden {
+                display: none;
+            }
+
+            /* Efecto hover personalizado con el color de la carrera */
+            .centro-card:hover {
+                transform: translate(-4px, -4px);
+            }
+
+            .centro-badge {
+                font-family: 'Sifonn', sans-serif;
+                font-size: 1.8rem;
+                text-transform: uppercase;
+                margin-bottom: 1rem;
+                display: inline-block;
+                width: fit-content;
+                padding: 0.15rem 0.6rem;
+                color: #fff;
+                border-radius: 4px;
+                border: 2px solid #111;
+                box-shadow: 2px 2px 0px #111;
+            }
+
+            .centro-card h3 {
+                font-family: 'Raleway', sans-serif;
+                font-weight: 800;
+                font-size: 1rem;
+                margin: 0 0 0.5rem 0;
+                color: #111;
+                line-height: 1.25;
+            }
+
+            .centro-meta {
+                font-size: 0.82rem;
+                color: #666;
+                margin-bottom: 1rem;
+            }
+
+            .centro-campus {
+                font-family: monospace;
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                background: #eee;
+                color: #333;
+                padding: 0.18rem 0.45rem;
+                width: fit-content;
+                margin-top: auto;
+                border-radius: 2px;
+            }
+
+            /* Responsive */
+            @media (max-width: 640px) {
+                .centros-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <Header />
+        <main>
+            <header>
+                <span class="subtitle-kicker">Organización Estudiantil de Base</span>
+                <h2>Centros Federados</h2>
+                <div class="intro-box">
+                    <p>CONGRESO E INTEGRACIÓN: Directorio de los distintos Centros de Estudiantes Federados (CEEs) de la Universidad de Chile. Acceso directo a sus canales institucionales y actas de representación local.</p>
+                </div>
+            </header>
+
+            <!-- FILTROS POR CAMPUS -->
+            <div class="filter-band">
+                <button class="filter-btn active" data-campus="all">Todos los Campus</button>
+                {campusList.map((campus) => (
+                    <button class="filter-btn" data-campus={campus}>{campus}</button>
+                ))}
+            </div>
+
+            <!-- GRILLA DE CENTROS DE ESTUDIANTES -->
+            <div class="centros-grid" id="centros-grid">
+                {centrosFederados.map((centro) => (
+                    <a
+                        href={centro.link}
+                        class="centro-card"
+                        data-campus={centro.campus}
+                        style={`--hover-color: ${centro.color};`}
+                        onmouseenter={`this.style.boxShadow = '6px 6px 0px ' + this.style.getPropertyValue('--hover-color'); this.style.borderColor = this.style.getPropertyValue('--hover-color');`}
+                        onmouseleave="this.style.boxShadow = '4px 4px 0px #111'; this.style.borderColor = '#111';"
+                    >
+                        <div>
+                            <span class="centro-badge" style={`background: ${centro.color};`}>
+                                {centro.sigla}
+                            </span>
+                            <h3>{centro.nombre}</h3>
+                            <p class="centro-meta">{centro.facultad}</p>
+                        </div>
+                        <span class="centro-campus">{centro.campus}</span>
+                    </a>
+                ))}
+            </div>
+        </main>
+        <Footer />
+
+        <script>
+            // Lógica de filtrado de campus
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const cards = document.querySelectorAll('.centro-card');
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Remover clase active de todos
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    // Añadir active al clickeado
+                    btn.classList.add('active');
+
+                    const campusFilter = btn.getAttribute('data-campus');
+
+                    cards.forEach(card => {
+                        const cardCampus = card.getAttribute('data-campus');
+                        if (campusFilter === 'all' || cardCampus === campusFilter) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>

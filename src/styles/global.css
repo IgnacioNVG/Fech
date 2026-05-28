@@ -1,0 +1,327 @@
+/*
+  The CSS in this style tag is based off of Bear Blog's default CSS.
+  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
+  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
+*/
+
+:root {
+	--accent: #FF1321;
+	--accent-dark: #FF1321;
+	--black: 15, 18, 25;
+	--gray: 96, 115, 159;
+	--gray-light: 229, 233, 240;
+	--gray-dark: 34, 41, 57;
+	--gray-gradient: rgba(var(--gray-light), 50%), #E5E5E5;
+	--box-shadow:
+		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
+		0 16px 32px rgba(var(--gray), 33%);
+}
+
+@font-face {
+	font-family: "Raleway";
+	src: url("/fonts/raleway-regular.woff") format("woff");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Sifonn";
+	src: url("/fonts/sifonn.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: block;
+}
+
+body {
+	font-family: "Raleway", sans-serif;
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	background-color: #E5E5E5;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	color: rgb(var(--gray-dark));
+	font-size: 20px;
+	line-height: 1.7;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	::view-transition-old(root) {
+		animation: none;
+	}
+
+	::view-transition-new(root) {
+		animation: none;
+	}
+
+	::view-transition-old(page-content) {
+		animation: page-slide-out-left 0.32s cubic-bezier(0.55, 0, 0.1, 1) both;
+	}
+
+	::view-transition-new(page-content) {
+		animation: page-slide-in-right 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
+	html[data-nav-direction="back"]::view-transition-old(page-content) {
+		animation-name: page-slide-out-right;
+	}
+
+	html[data-nav-direction="back"]::view-transition-new(page-content) {
+		animation-name: page-slide-in-left;
+	}
+}
+
+@keyframes page-slide-out-left {
+	from {
+		opacity: 1;
+		transform: translateX(0);
+	}
+	to {
+		opacity: 0;
+		transform: translateX(-2.5rem);
+	}
+}
+
+@keyframes page-slide-in-right {
+	from {
+		opacity: 0;
+		transform: translateX(2.5rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+@keyframes page-slide-out-right {
+	from {
+		opacity: 1;
+		transform: translateX(0);
+	}
+	to {
+		opacity: 0;
+		transform: translateX(2.5rem);
+	}
+}
+
+@keyframes page-slide-in-left {
+	from {
+		opacity: 0;
+		transform: translateX(-2.5rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+main {
+	width: 100%;
+	max-width: none;
+	margin: 0;
+	padding: 0;
+	view-transition-name: page-content;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Sifonn", sans-serif;
+	margin: 0 0 0.5rem 0;
+	color: rgb(var(--black));
+	line-height: 1.2;
+}
+
+h1 {
+	font-size: 3.052em;
+}
+
+h2 {
+	font-size: 2.441em;
+}
+
+h3 {
+	font-size: 1.953em;
+}
+
+h4 {
+	font-size: 1.563em;
+}
+
+h5 {
+	font-size: 1.25em;
+}
+
+strong,
+b {
+	font-weight: 700;
+}
+
+a {
+	color: var(--accent);
+}
+
+a:hover {
+	color: var(--accent);
+}
+
+p {
+	margin-bottom: 1em;
+}
+
+.prose p {
+	margin-bottom: 2em;
+}
+
+textarea,
+input {
+	font-size: 16px;
+}
+
+table {
+	width: 100%;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+}
+
+code {
+	padding: 2px 5px;
+	background-color: rgb(var(--gray-light));
+	border-radius: 2px;
+}
+
+pre {
+	padding: 1.5em;
+	border-radius: 8px;
+}
+
+pre>code {
+	all: unset;
+}
+
+blockquote {
+	border-left: 4px solid var(--accent);
+	padding: 0 0 0 20px;
+	margin: 0px;
+	font-size: 1.333em;
+}
+
+hr {
+	border: none;
+	border-top: 1px solid rgb(var(--gray-light));
+}
+
+@media (max-width: 720px) {
+	/* ... otros estilos existentes ... */
+
+	.internal-links {
+		display: flex;
+		flex-wrap: wrap;
+		/* Permitir que los links bajen a la siguiente línea */
+		justify-content: center;
+		gap: 0.5rem 1rem;
+		/* Menor gap vertical y horizontal */
+		width: 100%;
+		padding: 0 0.5rem;
+	}
+
+	header :global(a) {
+		padding: 0.2rem 0.3rem !important;
+		/* Reducir aún más el padding */
+		font-size: 0.7rem;
+		/* Reducir ligeramente el texto para que quepan */
+		letter-spacing: 0em;
+		white-space: nowrap;
+		/* Evitar que las palabras se corten */
+	}
+}
+
+/* Layout editorial: imagen a tamaño natural + texto enmarcado */
+.editorial-split {
+	display: grid;
+	grid-template-columns: minmax(160px, 260px) 1fr;
+	gap: clamp(1.25rem, 3vw, 2.5rem);
+	align-items: start;
+}
+
+.editorial-figure {
+	margin: 0;
+	width: fit-content;
+	max-width: 100%;
+}
+
+.editorial-figure img {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: min(68vh, 480px);
+	border: 3px solid #111;
+	box-shadow: 6px 6px 0 #111;
+}
+
+.editorial-sheet {
+	border: 3px solid #111;
+	background: #fff;
+	padding: clamp(1.25rem, 3vw, 2.5rem) clamp(1.25rem, 4vw, 3rem);
+	min-width: 0;
+}
+
+.editorial-sheet--compact {
+	padding: clamp(1rem, 2.5vw, 2rem) clamp(1rem, 3vw, 2.5rem);
+}
+
+.editorial-card-link {
+	display: grid;
+	grid-template-columns: minmax(140px, 200px) 1fr;
+	gap: clamp(1rem, 2.5vw, 2rem);
+	align-items: start;
+	text-decoration: none;
+	color: inherit;
+	margin-bottom: 2.5rem;
+	transition: opacity 0.15s ease;
+}
+
+.editorial-card-link:hover {
+	opacity: 0.92;
+}
+
+.editorial-card-link:hover .editorial-sheet {
+	box-shadow: 5px 5px 0 #111;
+}
+
+.editorial-card-link .editorial-figure img {
+	max-height: 360px;
+}
+
+@media (max-width: 720px) {
+	.editorial-split,
+	.editorial-card-link {
+		grid-template-columns: 1fr;
+	}
+
+	.editorial-figure {
+		margin: 0 auto;
+	}
+}
+
+.sr-only {
+	border: 0;
+	padding: 0;
+	margin: 0;
+	position: absolute !important;
+	height: 1px;
+	width: 1px;
+	overflow: hidden;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	white-space: nowrap;
+}

@@ -1,0 +1,460 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import FeedCard from '../components/home/FeedCard.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import { getCollection } from 'astro:content';
+import { buildArticuloItems } from '../lib/homeFeed';
+
+const articulos = await getCollection('articulos');
+
+// Adaptamos los artículos a FeedItem
+const editorialFeed = buildArticuloItems(articulos).sort(
+    (a, b) => b.pubDate.valueOf() - a.pubDate.valueOf()
+);
+
+const hero = editorialFeed[0];
+const destacados = editorialFeed.slice(1, 3);
+const restoNoticias = editorialFeed.slice(3, 6);
+---
+
+<!doctype html>
+<html lang="es">
+    <head>
+        <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+        <style>
+            .home {
+                width: min(1280px, calc(100% - 2rem));
+                margin: 0 auto;
+                padding: 1.5rem 0 4rem;
+            }
+
+            .masthead {
+                border-bottom: 4px solid #111;
+                padding-bottom: 1.25rem;
+                margin-bottom: 2rem;
+            }
+
+            .masthead-kicker {
+                font-family: monospace;
+                font-size: 0.72rem;
+                text-transform: uppercase;
+                letter-spacing: 0.2em;
+                color: #666;
+                margin: 0 0 0.5rem;
+            }
+
+            .masthead-title {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(2.2rem, 6vw, 4.5rem);
+                text-transform: uppercase;
+                line-height: 0.95;
+                margin: 0 0 0.35rem;
+                color: #111;
+            }
+
+            .masthead-edition {
+                font-family: monospace;
+                font-size: 0.8rem;
+                color: #444;
+                margin: 0;
+            }
+
+            /* --- ACCESOS DIRECTOS INSTITUCIONALES (DISEÑO PREMIUM BRUTALISTA) --- */
+            .institutional-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                margin: 2.5rem 0;
+            }
+
+            .inst-card {
+                background: #fff;
+                border: 2px solid #111;
+                border-radius: 8px;
+                box-shadow: 4px 4px 0px 0px #111;
+                padding: 2rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                text-decoration: none;
+                color: inherit;
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .inst-card:hover {
+                transform: translate(-3px, -3px);
+                box-shadow: 6px 6px 0px 0px #ff0000;
+                border-color: #ff0000;
+            }
+
+            .inst-card h3 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: 1.6rem;
+                text-transform: uppercase;
+                margin: 0 0 0.75rem 0;
+                color: #111;
+                border-bottom: 2px solid #111;
+                padding-bottom: 0.5rem;
+            }
+
+            .inst-card:hover h3 {
+                border-color: #ff0000;
+                color: #ff0000;
+            }
+
+            .inst-card p {
+                font-size: 0.88rem;
+                line-height: 1.5;
+                color: #444;
+                margin: 0 0 1.5rem 0;
+                flex-grow: 1;
+            }
+
+            .inst-card .link-text {
+                font-family: monospace;
+                font-size: 0.75rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                align-self: flex-start;
+                border-bottom: 2px solid #111;
+                padding-bottom: 2px;
+                transition: all 0.2s;
+            }
+
+            .inst-card:hover .link-text {
+                color: #ff0000;
+                border-color: #ff0000;
+            }
+
+            /* --- SECCIONES Y ENLACES --- */
+            .section-band {
+                display: flex;
+                justify-content: space-between;
+                align-items: baseline;
+                border-top: 0.45rem solid #111;
+                padding-top: 0.5rem;
+                margin: 3.5rem 0 1.5rem;
+            }
+
+            .section-band h2 {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(1.2rem, 2.5vw, 1.75rem);
+                text-transform: uppercase;
+                margin: 0;
+                color: #111;
+            }
+
+            .section-band a {
+                font-family: monospace;
+                font-size: 0.7rem;
+                text-transform: uppercase;
+                color: #111;
+                text-decoration: none;
+                border-bottom: 1px solid #111;
+            }
+
+            .section-band a:hover {
+                color: #ff1321;
+                border-color: #ff1321;
+            }
+
+            /* --- TARJETAS BRUTALISTAS --- */
+            .hero-zone :global(.feed-card--hero),
+            .feed-grid :global(.feed-card) {
+                background-color: #fff;
+                border: 2px solid #111;
+                border-radius: 8px;
+                box-shadow: 4px 4px 0px 0px #111;
+                overflow: hidden;
+                -webkit-mask-image: -webkit-radial-gradient(white, black);
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                display: flex;
+                flex-direction: column;
+            }
+
+            .hero-zone :global(.feed-card--hero:hover),
+            .feed-grid :global(.feed-card:hover) {
+                transform: translate(-3px, -3px);
+                box-shadow: 6px 6px 0px 0px #ff0000;
+                border-color: #ff0000;
+                background-color: #fff;
+            }
+
+            /* --- ESTRUCTURAS DE GRILLA --- */
+            .hero-zone { margin-bottom: 2.5rem; }
+
+            .hero-zone :global(.feed-card--hero .feed-card-link) {
+                display: grid;
+                grid-template-columns: 1.15fr 1fr;
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .feed-grid--articulos {
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                gap: 2rem;
+            }
+
+            .feed-grid--articulos :global(.feed-card) {
+                grid-column: span 4;
+            }
+
+            .feed-grid--articulos :global(.feed-card--featured) {
+                grid-column: span 6;
+            }
+
+            /* --- IMÁGENES Y ZOOM --- */
+            .hero-zone :global(.feed-media--landscape) {
+                aspect-ratio: 2 / 1;
+                background: #f0f0f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                border-right: 2px solid #111;
+            }
+
+            .feed-grid :global(.feed-media--landscape) {
+                aspect-ratio: 2 / 1;
+                background: #f0f0f0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+                border-bottom: 2px solid #111;
+            }
+
+            .hero-zone :global(.feed-media--landscape img),
+            .feed-grid :global(.feed-media--landscape img) {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                transform: scale(1.01);
+                transition: transform 0.3s ease;
+            }
+
+            .hero-zone :global(.feed-card--hero:hover .feed-media--landscape img),
+            .feed-grid :global(.feed-card:hover .feed-media--landscape img) {
+                transform: scale(1.06);
+            }
+
+            /* --- CONTENEDORES DE TEXTO --- */
+            .feed-grid :global(.feed-card-link) {
+                display: flex;
+                flex-direction: column;
+                height: 100%;
+                text-decoration: none;
+                color: inherit;
+            }
+
+            .hero-zone :global(.feed-card--hero .feed-body) {
+                padding: clamp(1.25rem, 3vw, 2.5rem);
+                display: flex;
+                flex-direction: column;
+            }
+
+            .feed-grid :global(.feed-body) {
+                padding: 1.25rem;
+                display: flex;
+                flex-direction: column;
+                flex-grow: 1;
+            }
+
+            /* --- TIPOGRAFÍA Y ETIQUETAS --- */
+            .hero-zone :global(.feed-title--hero) {
+                font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+                font-family: 'Sifonn', sans-serif;
+                text-transform: uppercase;
+                line-height: 0.95;
+                margin: 0 0 0.5rem;
+                color: #111;
+            }
+
+            .feed-grid :global(.feed-title) {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(0.95rem, 1.4vw, 1.25rem);
+                text-transform: uppercase;
+                line-height: 1.1;
+                margin: 0 0 0.5rem;
+                color: #111;
+            }
+
+            .hero-zone :global(.feed-desc),
+            .feed-grid :global(.feed-desc) {
+                font-size: 0.85rem;
+                line-height: 1.45;
+                color: #444;
+                margin: 0 0 0.75rem;
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                flex-grow: 1;
+            }
+
+            .hero-zone :global(.feed-desc) {
+                font-size: 1rem;
+                line-height: 1.55;
+            }
+
+            .feed-grid :global(.feed-tags),
+            .hero-zone :global(.feed-tags) {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.35rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .feed-grid :global(.feed-tag),
+            .hero-zone :global(.feed-tag) {
+                font-family: monospace;
+                font-size: 0.6rem;
+                text-transform: uppercase;
+                background: #eee;
+                color: #333;
+                padding: 0.15rem 0.4rem;
+                transition: background 0.2s, color 0.2s;
+            }
+
+            .feed-grid :global(.feed-tag--section),
+            .hero-zone :global(.feed-tag--section) {
+                background: #111;
+                color: #fff;
+            }
+
+            .feed-grid :global(.feed-card:hover .feed-tag),
+            .hero-zone :global(.feed-card--hero:hover .feed-tag) {
+                background: #ff0000;
+                color: #fff;
+            }
+
+            .feed-grid :global(.feed-meta) {
+                margin-top: auto;
+                font-family: monospace;
+                font-size: 0.65rem;
+                color: #777;
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                padding-top: 0.6rem;
+                border-top: 1px solid #111;
+            }
+
+            .feed-grid :global(.feed-author) {
+                font-weight: bold;
+                color: #111;
+                border-left: 3px solid #ff1321;
+                padding-left: 0.4rem;
+            }
+
+            /* --- RESPONSIVIDAD --- */
+            @media (max-width: 1024px) {
+                .feed-grid--articulos :global(.feed-card),
+                .feed-grid--articulos :global(.feed-card--featured) {
+                    grid-column: span 6;
+                }
+                .institutional-grid {
+                    gap: 1.5rem;
+                }
+            }
+
+            @media (max-width: 720px) {
+                .hero-zone :global(.feed-card--hero .feed-card-link) {
+                    grid-template-columns: 1fr;
+                }
+
+                .hero-zone :global(.feed-media--landscape) {
+                    border-right: none;
+                    border-bottom: 2px solid #111;
+                }
+
+                .feed-grid--articulos :global(.feed-card),
+                .feed-grid--articulos :global(.feed-card--featured) {
+                    grid-column: span 12;
+                }
+
+                .institutional-grid {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main class="home">
+            <header class="masthead">
+                <p class="masthead-kicker">"[Lema / Consigna Oficial de la FECh]"</p>
+                <h1 class="masthead-title">{SITE_TITLE}</h1>
+                <p class="masthead-edition">
+                    {SITE_DESCRIPTION}
+                </p>
+            </header>
+
+            <!-- ACCESOS DIRECTOS INSTITUCIONALES -->
+            <section class="institutional-grid">
+                <a href="/mesa" class="inst-card">
+                    <div>
+                        <h3>Mesa FECh</h3>
+                        <p>Conoce la conformación de la directiva de la federación, sus principios organizativos y líneas de acción política para la representación estudiantil.</p>
+                    </div>
+                    <span class="link-text">Ver Mesa Directiva →</span>
+                </a>
+                <a href="/centros" class="inst-card">
+                    <div>
+                        <h3>Centros Federados</h3>
+                        <p>Directorio organizado con enlaces y canales de comunicación oficiales de cada uno de los centros de estudiantes de las distintas facultades y campus.</p>
+                    </div>
+                    <span class="link-text">Explorar Centros →</span>
+                </a>
+                <a href="/secretarias" class="inst-card">
+                    <div>
+                        <h3>Secretarías FECh</h3>
+                        <p>Espacios temáticos y operativos dedicados a la articulación colectiva en materias académicas, de género, bienestar, deportes, cultura y más.</p>
+                    </div>
+                    <span class="link-text">Ver Secretarías →</span>
+                </a>
+            </section>
+
+            <!-- SECCIÓN COMUNICADOS OFICIALES -->
+            {hero && (
+                <>
+                    <div class="section-band">
+                        <h2>Noticias y Comunicados Oficiales</h2>
+                        <a href="/articulos">Ver todos los comunicados →</a>
+                    </div>
+
+                    <section class="hero-zone">
+                        <FeedCard item={hero} variant="hero" />
+                    </section>
+                </>
+            )}
+
+            {destacados.length > 0 && (
+                <div class="feed-grid feed-grid--articulos">
+                    {destacados.map((item) => (
+                        <FeedCard item={item} variant="featured" />
+                    ))}
+                </div>
+            )}
+
+            {restoNoticias.length > 0 && (
+                <>
+                    <div class="section-band">
+                        <h2>Comunicados Anteriores</h2>
+                    </div>
+                    <div class="feed-grid feed-grid--articulos">
+                        {restoNoticias.map((item) => (
+                            <FeedCard item={item} />
+                        ))}
+                    </div>
+                </>
+            )}
+        </main>
+        <Footer />
+    </body>
+</html>

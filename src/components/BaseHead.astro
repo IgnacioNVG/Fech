@@ -1,0 +1,82 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+
+interface Props {
+	title: string;
+	description: string;
+	image?: string;
+}
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<ClientRouter />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="generator" content={Astro.generator} />
+
+<link rel="preload" href="/fonts/raleway-regular.woff" as="font" type="font/woff" crossorigin />
+<link rel="preload" href="/fonts/sifonn.woff2" as="font" type="font/woff2" crossorigin />
+
+<link rel="canonical" href={canonicalURL} />
+
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+
+<meta property="og:type" content="website" />
+<meta property="og:url" content={Astro.url} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={new URL(image, Astro.url)} />
+
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:url" content={Astro.url} />
+<meta property="twitter:title" content={title} />
+<meta property="twitter:description" content={description} />
+<meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<script is:inline>
+    (function() {
+        if (window.hasAddedNavListeners) return;
+        window.hasAddedNavListeners = true;
+
+        const navOrder = ['/', '/mesa', '/centros', '/secretarias', '/articulos'];
+        
+        const sectionFor = (url) => {
+            if (!url) return -1;
+            const urlStr = url instanceof URL ? url.href : String(url);
+            try {
+                const path = new URL(urlStr, window.location.origin).pathname.replace(/\/$/, '') || '/';
+                return navOrder.findIndex((item) => path === item || (item !== '/' && path.startsWith(`${item}/`)));
+            } catch (e) {
+                return -1;
+            }
+        };
+
+        // Escuchar antes de que comience la preparación de la transición
+        document.addEventListener('astro:before-preparation', (event) => {
+            const from = sectionFor(event.from);
+            const to = sectionFor(event.to);
+
+            // Avanzar en el nav (mayor índice = más a la derecha) → contenido entra desde la derecha
+            // Retroceder (menor índice = más a la izquierda) → contenido entra desde la izquierda
+            let direction = 'forward';
+            if (from !== -1 && to !== -1 && from !== to) {
+                direction = to > from ? 'forward' : 'back';
+            }
+            document.documentElement.dataset.navDirection = direction;
+        });
+
+        // Asegurar que el atributo se mantenga en el nuevo documento tras el swap
+        document.addEventListener('astro:before-swap', (event) => {
+            const direction = document.documentElement.dataset.navDirection;
+            if (direction) {
+                event.newDocument.documentElement.dataset.navDirection = direction;
+            }
+        });
+    })();
+</script>
