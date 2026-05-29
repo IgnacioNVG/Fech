@@ -11,7 +11,7 @@
 	--gray: 96, 115, 159;
 	--gray-light: 229, 233, 240;
 	--gray-dark: 34, 41, 57;
-	--gray-gradient: rgba(var(--gray-light), 50%), #E5E5E5;
+	--gray-gradient: rgba(var(--gray-light), 50%), #FBF6F0;
 	--box-shadow:
 		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
 		0 16px 32px rgba(var(--gray), 33%);
@@ -26,8 +26,8 @@
 }
 
 @font-face {
-	font-family: "Sifonn";
-	src: url("/fonts/sifonn.woff2") format("woff2");
+	font-family: "creato";
+	src: url("/fonts/creato.woff2") format("woff2");
 	font-weight: 700;
 	font-style: normal;
 	font-display: block;
@@ -38,7 +38,7 @@ body {
 	margin: 0;
 	padding: 0;
 	text-align: left;
-	background-color: #E5E5E5;
+	background-color: #FBF6F0;
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	color: rgb(var(--gray-dark));
@@ -130,7 +130,7 @@ h3,
 h4,
 h5,
 h6 {
-	font-family: "Sifonn", sans-serif;
+	font-family: "creato", sans-serif;
 	margin: 0 0 0.5rem 0;
 	color: rgb(var(--black));
 	line-height: 1.2;

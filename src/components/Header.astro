@@ -21,7 +21,7 @@ const svgContent = rawSvg
         <div class="logo nav-item">
             <a href="/" class="logo-link">
                 <Fragment set:html={svgContent} />
-                <span class="sifonn">FECh</span>
+                <span class="creato">FECh</span>
             </a>
         </div>
 
@@ -59,7 +59,7 @@ const svgContent = rawSvg
     header {
         margin: 0;
         padding: 0 2rem;
-        background: #E5E5E5;
+        background: #FBF6F0;
         border-bottom: 2px solid #000;
         width: 100%;
         box-sizing: border-box;
@@ -91,12 +91,12 @@ const svgContent = rawSvg
     }
 
     /* El logo se pone rojo cuando está activo (index) */
-    .logo-link.active .sifonn {
-        color: #ff0000;
+    .logo-link.active .creato {
+        color: #981626;
     }
 
-    .sifonn {
-        font-family: 'Sifonn', sans-serif;
+    .creato {
+        font-family: 'creato', sans-serif;
         font-size: 1.5rem; /* Reducido de 1.8rem */
         text-transform: uppercase;
         line-height: 1;
@@ -125,14 +125,14 @@ const svgContent = rawSvg
     }
 
     header :global(a.active) {
-        color: #ff0000;
+        color: #981626;
     }
 
     .nav-indicator {
         position: absolute;
         bottom: -2px;
         height: 4px;
-        background: #ff0000;
+        background: #981626;
         transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         pointer-events: none;
         opacity: 0;
@@ -167,7 +167,7 @@ const svgContent = rawSvg
             justify-self: start;
         }
 
-        .sifonn {
+        .creato {
             font-size: 1.1rem; /* Compacto y muy legible */
             letter-spacing: 0.02em;
         }
@@ -250,7 +250,7 @@ const svgContent = rawSvg
     /* Floating Capsule Clone for Fusion Animation */
     .home-btn-clone {
         position: fixed;
-        color: #ff0000;
+        color: #981626;
         font-family: monospace;
         font-weight: bold;
         font-size: 0.85rem;
@@ -260,7 +260,7 @@ const svgContent = rawSvg
         transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
         transform-origin: center;
         background: rgba(255, 0, 0, 0.1);
-        border: 2px solid #ff0000;
+        border: 2px solid #981626;
         border-radius: 4px;
         padding: 0.3rem 0.6rem;
         box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
@@ -271,7 +271,7 @@ const svgContent = rawSvg
     }
 
     /* Logo pulse/glow animation when receiving the fusion energy */
-    .sifonn.fusing {
+    .creato.fusing {
         animation: logoGlowPulse 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 
@@ -282,12 +282,12 @@ const svgContent = rawSvg
             text-shadow: none;
         }
         30% {
-            color: #ff0000;
+            color: #981626;
             transform: scale(1.1);
             text-shadow: 0 0 20px rgba(255, 0, 0, 0.8), 0 0 30px rgba(255, 0, 0, 0.4);
         }
         100% {
-            color: #ff0000;
+            color: #981626;
             transform: scale(1);
             text-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
         }
@@ -399,7 +399,7 @@ const svgContent = rawSvg
         });
 
         const homeBtn = document.querySelector('[data-home-btn]') as HTMLElement;
-        const logoText = document.querySelector('.logo-link .sifonn') as HTMLElement;
+        const logoText = document.querySelector('.logo-link .creato') as HTMLElement;
 
         function runFusion(e: Event) {
             const currentPath = window.location.pathname.replace(/\/$/, "") || "/";
