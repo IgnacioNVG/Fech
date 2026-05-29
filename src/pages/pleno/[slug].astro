@@ -1,0 +1,181 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+    const posts = await getCollection('pleno');
+    return posts.map(post => ({
+        params: { slug: post.id },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const formattedDate = new Date(post.data.pubDate).toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+});
+---
+
+<Layout title={`${post.data.title} | Pleno FECh`}>
+    <main class="post-detail">
+        <a href="/pleno" class="back-link">← Volver al Pleno</a>
+        
+        <article class="brutalist-article brutalist-box">
+            <header class="article-header">
+                <span class="post-date">{formattedDate}</span>
+                <h1>{post.data.title}</h1>
+                <p class="post-desc">{post.data.description}</p>
+                <div class="post-meta">
+                    <span>Por: <strong>{post.data.author}</strong></span>
+                </div>
+            </header>
+
+            {post.data.heroImage && (
+                <div class="post-hero">
+                    <img src={post.data.heroImage.src} alt={post.data.title} />
+                </div>
+            )}
+
+            <div class="post-content">
+                <Content />
+            </div>
+        </article>
+    </main>
+</Layout>
+
+<style>
+    .post-detail {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: clamp(2rem, 8vw, 4rem) 5%;
+        box-sizing: border-box;
+    }
+
+    .back-link {
+        display: inline-block;
+        font-family: monospace;
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #111;
+        text-decoration: none;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid #111;
+        padding-bottom: 2px;
+        transition: all 0.2s ease;
+    }
+
+    .back-link:hover {
+        color: #ff0000;
+        border-color: #ff0000;
+        transform: translateX(-4px);
+    }
+
+    .brutalist-box {
+        border: 2px solid #111;
+        box-shadow: 4px 4px 0px #111;
+        background: #fff;
+        border-radius: 8px;
+    }
+
+    .brutalist-article {
+        padding: clamp(1.5rem, 5vw, 3rem);
+    }
+
+    .article-header {
+        border-bottom: 2px solid #111;
+        padding-bottom: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .post-date {
+        font-family: monospace;
+        font-weight: bold;
+        font-size: 0.8rem;
+        background: #111;
+        color: #fff;
+        padding: 0.2rem 0.6rem;
+        display: inline-block;
+        margin-bottom: 1.5rem;
+    }
+
+    .article-header h1 {
+        font-family: 'creato', sans-serif;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+        text-transform: uppercase;
+        line-height: 1;
+        margin: 0 0 1rem 0;
+        color: #111;
+    }
+
+    .post-desc {
+        font-family: 'lora', sans-serif;
+        font-size: 1.15rem;
+        line-height: 1.5;
+        color: #444;
+        margin: 0 0 1.5rem 0;
+        font-style: italic;
+    }
+
+    .post-meta {
+        font-family: monospace;
+        font-size: 0.85rem;
+        color: #666;
+    }
+
+    .post-hero {
+        margin: 2rem 0;
+        border: 2px solid #111;
+        box-shadow: 4px 4px 0px #111;
+        overflow: hidden;
+        border-radius: 4px;
+        background: #eee;
+    }
+
+    .post-hero img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .post-content {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: #222;
+    }
+
+    /* Estilos enriquecidos para el Markdown */
+    .post-content :global(p) {
+        margin: 0 0 1.5rem 0;
+    }
+
+    .post-content :global(h2), .post-content :global(h3) {
+        font-family: 'creato', sans-serif;
+        text-transform: uppercase;
+        color: #111;
+        margin: 2rem 0 1rem 0;
+    }
+
+    .post-content :global(h2) {
+        font-size: 1.6rem;
+        border-bottom: 2px solid #111;
+        padding-bottom: 0.5rem;
+    }
+
+    .post-content :global(ul), .post-content :global(ol) {
+        margin: 0 0 1.5rem 0;
+        padding-left: 1.5rem;
+    }
+
+    .post-content :global(li) {
+        margin-bottom: 0.5rem;
+    }
+
+    .post-content :global(strong) {
+        color: #000;
+    }
+</style>

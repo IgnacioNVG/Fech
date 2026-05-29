@@ -1,0 +1,375 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { SITE_TITLE } from '../../consts';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+    const centros = await getCollection('centros');
+    return centros.map(centro => ({
+        params: { id: centro.id },
+        props: { centro },
+    }));
+}
+
+const { centro } = Astro.props;
+const { Content } = await render(centro);
+
+// Obtener todas las publicaciones y filtrar las de este centro
+const todasPublicaciones = await getCollection('publicaciones');
+const publicacionesCentro = todasPublicaciones
+    .filter(pub => pub.data.centro.toLowerCase() === centro.id.toLowerCase())
+    .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <BaseHead title={`${centro.data.nombre} | ${SITE_TITLE}`} description={`Página oficial de la representación de base del ${centro.data.nombre} (${centro.data.sigla}).`} />
+        <style define:vars={{ "centro-color": centro.data.color }}>
+            :global(body) {
+                overflow-x: hidden;
+            }
+
+            main {
+                width: 100%;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: clamp(2rem, 8vw, 4rem) 5%;
+                box-sizing: border-box;
+            }
+
+            .back-link {
+                display: inline-block;
+                font-family: monospace;
+                font-weight: bold;
+                text-transform: uppercase;
+                color: #111;
+                text-decoration: none;
+                margin-bottom: 2rem;
+                border-bottom: 2px solid #111;
+                padding-bottom: 2px;
+                transition: all 0.2s ease;
+                width: fit-content;
+            }
+
+            .back-link:hover {
+                color: var(--centro-color);
+                border-color: var(--centro-color);
+                transform: translateX(-4px);
+            }
+
+            /* Header brutalista del centro */
+            .centro-header-box {
+                border: 2px solid #111;
+                box-shadow: 6px 6px 0px #111;
+                background: #fff;
+                padding: clamp(1.5rem, 5vw, 3rem);
+                margin-bottom: 4rem;
+                border-radius: 8px;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .centro-header-box::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 12px;
+                background-color: var(--centro-color);
+                border-bottom: 2px solid #111;
+            }
+
+            .sigla-badge {
+                font-family: 'Sifonn', sans-serif;
+                font-size: clamp(2rem, 6vw, 3.5rem);
+                text-transform: uppercase;
+                background-color: var(--centro-color);
+                color: #fff;
+                padding: 0.2rem 1rem;
+                border: 2px solid #111;
+                box-shadow: 3px 3px 0px #111;
+                display: inline-block;
+                margin-bottom: 1.5rem;
+                margin-top: 1rem;
+                border-radius: 4px;
+            }
+
+            .centro-header-box h1 {
+                font-family: 'creato', sans-serif;
+                font-size: clamp(1.8rem, 5vw, 2.8rem);
+                text-transform: uppercase;
+                line-height: 1.1;
+                margin: 0 0 1rem 0;
+                color: #111;
+            }
+
+            .centro-meta-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+                font-family: monospace;
+                font-size: 0.9rem;
+                border-top: 2px solid #111;
+                padding-top: 1.5rem;
+                margin-top: 1.5rem;
+                color: #444;
+            }
+
+            .centro-meta-item strong {
+                color: #111;
+            }
+
+            /* Secciones */
+            .section-title {
+                font-family: 'creato', sans-serif;
+                font-size: clamp(1.6rem, 4vw, 2.2rem);
+                text-transform: uppercase;
+                border-bottom: 4px solid #111;
+                padding-bottom: 0.5rem;
+                margin-bottom: 2rem;
+                color: #111;
+            }
+
+            .grid-layout {
+                display: grid;
+                grid-template-columns: 8fr 4fr;
+                gap: 3rem;
+                margin-bottom: 4rem;
+            }
+
+            @media (max-width: 900px) {
+                .grid-layout {
+                    grid-template-columns: 1fr;
+                    gap: 3rem;
+                }
+            }
+
+            .intro-text {
+                font-size: 1.05rem;
+                line-height: 1.7;
+                color: #333;
+            }
+
+            /* Integrantes */
+            .integrantes-list {
+                display: flex;
+                flex-direction: column;
+                gap: 1.25rem;
+            }
+
+            .integrante-card {
+                background: #fff;
+                border: 2px solid #111;
+                box-shadow: 3px 3px 0px #111;
+                padding: 1.25rem;
+                border-radius: 6px;
+                transition: all 0.2s ease;
+            }
+
+            .integrante-card:hover {
+                transform: translate(-2px, -2px);
+                box-shadow: 5px 5px 0px var(--centro-color);
+                border-color: var(--centro-color);
+            }
+
+            .integrante-card h4 {
+                font-family: 'lora', sans-serif;
+                font-weight: 800;
+                font-size: 1.1rem;
+                margin: 0 0 0.25rem 0;
+                color: #111;
+            }
+
+            .integrante-cargo {
+                font-family: monospace;
+                font-size: 0.78rem;
+                text-transform: uppercase;
+                background-color: #eee;
+                color: #444;
+                padding: 0.15rem 0.45rem;
+                border-radius: 3px;
+                display: inline-block;
+                margin-bottom: 0.5rem;
+            }
+
+            .integrante-email {
+                display: block;
+                font-family: monospace;
+                font-size: 0.8rem;
+                color: #666;
+                text-decoration: none;
+                border-bottom: 1px dashed #ccc;
+                width: fit-content;
+            }
+
+            .integrante-email:hover {
+                color: var(--centro-color);
+                border-color: var(--centro-color);
+            }
+
+            /* Publicaciones */
+            .pubs-section {
+                margin-top: 2rem;
+            }
+
+            .pubs-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 2rem;
+            }
+
+            .pub-card {
+                background: #fff;
+                border: 2px solid #111;
+                box-shadow: 4px 4px 0px #111;
+                border-radius: 8px;
+                padding: 1.75rem;
+                text-decoration: none;
+                color: inherit;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                min-height: 180px;
+                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .pub-card:hover {
+                transform: translate(-4px, -4px);
+                box-shadow: 6px 6px 0px var(--centro-color);
+                border-color: var(--centro-color);
+            }
+
+            .pub-date {
+                font-family: monospace;
+                font-size: 0.75rem;
+                color: #777;
+                margin-bottom: 0.75rem;
+                display: block;
+            }
+
+            .pub-card h3 {
+                font-family: 'creato', sans-serif;
+                font-size: 1.25rem;
+                text-transform: uppercase;
+                line-height: 1.2;
+                margin: 0 0 0.5rem 0;
+                color: #111;
+            }
+
+            .pub-desc {
+                font-size: 0.88rem;
+                line-height: 1.45;
+                color: #555;
+                margin: 0 0 1rem 0;
+                display: -webkit-box;
+                -webkit-line-clamp: 2;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .read-more {
+                font-family: monospace;
+                font-size: 0.75rem;
+                font-weight: bold;
+                text-transform: uppercase;
+                align-self: flex-start;
+                border-bottom: 2px solid #111;
+                padding-bottom: 2px;
+            }
+
+            .pub-card:hover .read-more {
+                color: var(--centro-color);
+                border-color: var(--centro-color);
+            }
+
+            .empty-state {
+                border: 2px dashed #ccc;
+                padding: 3rem;
+                text-align: center;
+                font-family: monospace;
+                color: #777;
+                background-color: #fafafa;
+                border-radius: 8px;
+            }
+        </style>
+    </head>
+    <body>
+        <Header />
+        <main>
+            <a href="/centros" class="back-link">← Volver a Centros Federados</a>
+
+            <!-- Encabezado del Centro -->
+            <section class="centro-header-box">
+                <span class="sigla-badge">{centro.data.sigla}</span>
+                <h1>{centro.data.nombre}</h1>
+                
+                <div class="centro-meta-grid">
+                    <div class="centro-meta-item">
+                        Facultad: <strong>{centro.data.facultad}</strong>
+                    </div>
+                    <div class="centro-meta-item">
+                        Campus: <strong>{centro.data.campus}</strong>
+                    </div>
+                </div>
+            </section>
+
+            <div class="grid-layout">
+                <!-- Columna Izquierda: Historia / Descripción -->
+                <div class="info-column">
+                    <h2 class="section-title">Presentación</h2>
+                    <div class="intro-text">
+                        <Content />
+                    </div>
+                </div>
+
+                <!-- Columna Derecha: Integrantes -->
+                <div class="integrantes-column">
+                    <h2 class="section-title">Integrantes</h2>
+                    {centro.data.integrantes && centro.data.integrantes.length > 0 ? (
+                        <div class="integrantes-list">
+                            {centro.data.integrantes.map((int) => (
+                                <div class="integrante-card">
+                                    <h4>{int.nombre}</h4>
+                                    <span class="integrante-cargo">{int.cargo}</span>
+                                    {int.email && (
+                                        <a href={`mailto:${int.email}`} class="integrante-email">{int.email}</a>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div class="empty-state">No hay integrantes registrados actualmente.</div>
+                    )}
+                </div>
+            </div>
+
+            <!-- Publicaciones Locales -->
+            <section class="pubs-section">
+                <h2 class="section-title">Publicaciones y Comunicados</h2>
+                {publicacionesCentro.length > 0 ? (
+                    <div class="pubs-grid">
+                        {publicacionesCentro.map((pub) => (
+                            <a href={`/centros/${centro.id}/${pub.id}`} class="pub-card">
+                                <div>
+                                    <span class="pub-date">
+                                        {new Date(pub.data.pubDate).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}
+                                    </span>
+                                    <h3>{pub.data.title}</h3>
+                                    <p class="pub-desc">{pub.data.description}</p>
+                                </div>
+                                <span class="read-more">Leer comunicado →</span>
+                            </a>
+                        ))}
+                    </div>
+                ) : (
+                    <div class="empty-state">No hay publicaciones recientes de este centro.</div>
+                )}
+            </section>
+        </main>
+        <Footer />
+    </body>
+</html>

@@ -1,255 +1,170 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import Layout from '../layouts/Layout.astro';
 import { SITE_TITLE } from '../consts';
 
-// Cargos y Estructura de la Mesa Directiva
-const mesaDirectiva = [
-    {
-        cargo: "Presidencia",
-        nombre: "Laura Mlynarz Greibe",
-        desc: "Representación política oficial de la federación. Conduce la postura pública y lidera las relaciones institucionales dentro y fuera del campus universitario.",
-        color: "#000"
+const composicionConsejo = [
+    { fuerza: "Juventudes Comunistas (JJCC)", escanos: 1, color: "#c0392b" },
+    { fuerza: "Frente Amplio (FA)", escanos: 1, color: "#8e44ad" },
+    { fuerza: "Independientes", escanos: 1, color: "#e67e22" },
+];
+
+const totalEscanos = composicionConsejo.reduce((acc, curr) => acc + curr.escanos, 0);
+
+const consejeres = [
+    { 
+        nombre: "Fabián Olivares", 
+        facultad: "Facultad de Ciencias Sociales", 
+        bloque: "Juventudes Comunistas (JJCC)", 
+        color: "#c0392b",
+        cargo: "Consejero de Campus"
     },
-    {
-        cargo: "Vicepresidencia",
-        nombre: "Monserrat Lagos",
-        desc: "Apoyo a la coordinación general de la Mesa Directiva, subrogancia de la presidencia y vinculación directa con los proyectos territoriales.",
-        color: "#222"
+    { 
+        nombre: "Benjamín Campos", 
+        facultad: "Facultad de Comunicación e Imagen", 
+        bloque: "Frente Amplio (FA)", 
+        color: "#8e44ad",
+        cargo: "Consejera de Campus"
     },
-    {
-        cargo: "Secretaría General",
-        nombre: "Javier Concha",
-        desc: "Encargada del flujo interno de la federación. Redacción de actas, coordinación de los plenos y enlace oficial con los Centros Federados.",
-        color: "#333"
-    },
-    {
-        cargo: "Secretaría de Finanzas",
-        nombre: "Isidora Velasquez",
-        desc: "Gestión y administración del presupuesto federativo. Asegura la transparencia, rendición de cuentas periódica y financiamiento de proyectos de base.",
-        color: "#ff0000"
-    },
-        {
-        cargo: "Secretaría de Bienestar",
-        nombre: "Jesús Malebran",
-        desc: "Gestión y administración del presupuesto federativo. Asegura la transparencia, rendición de cuentas periódica y financiamiento de proyectos de base.",
-        color: "#ff0000"
-    },
-    {
-        cargo: "Secretaría de Bienestar",
-        nombre: "Jesús Malebran",
-        desc: "Gestión y administración del presupuesto federativo. Asegura la transparencia, rendición de cuentas periódica y financiamiento de proyectos de base.",
-        color: "#ff0000"
-    },
-    {
-        cargo: "Secretaría de Comunicaciones",
-        nombre: "[Nombre del Secretario/a de Comunicaciones por definir]",
-        desc: "Responsable de la difusión oficial de la FECh, coordinación de redes sociales, relación con la prensa y diseño de campañas informativas universitarias.",
-        color: "#111"
+    { 
+        nombre: "Alonso Palma", 
+        facultad: "Facultad de Ciencias Sociales", 
+        bloque: "Juventudes Comunistas (JJCC)", 
+        color: "#e67e22",
+        cargo: "Consejero de Campus"
     }
 ];
+
+const facultadesList = [...new Set(consejeres.map(c => c.facultad))];
 ---
 
-<!DOCTYPE html>
-<html lang="es">
-    <head>
-        <BaseHead title={`Mesa Directiva | ${SITE_TITLE}`} description="Mesa Directiva oficial de la Federación de Estudiantes de la Universidad de Chile" />
-        <style>
-            :global(body) {
-                overflow-x: hidden;
-            }
+<Layout title={`Consejeros de Campus | ${SITE_TITLE}`}>
+    <main>
+        <header>
+            <span class="subtitle-kicker">Representación Territorial (JGM)</span>
+            <h2>Consejeros de Campus</h2>
+            <div class="intro-box">
+                <p>CONSEJO DE CAMPUS JGM: El Consejo de Campus Juan Gómez Millas coordina el trabajo estudiantil y la representación gremial a nivel territorial, articulando la voz de las facultades de Ciencias, Ciencias Sociales, Filosofía y Humanidades, y el Instituto de la Comunicación e Imagen.</p>
+            </div>
+        </header>
 
-            main {
-                width: 100%;
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: clamp(2rem, 8vw, 4rem) 5%;
-                box-sizing: border-box;
-            }
+        <section class="graph-section brutalist-box">
+            <span class="subtitle-kicker mb-4" style="margin-bottom: 1.5rem;">Composición Política ({totalEscanos} Escaños)</span>
+            
+            <div class="graph-bar">
+                {composicionConsejo.map((fuerza) => (
+                    <div 
+                        class="graph-segment" 
+                        style={`width: ${(fuerza.escanos / totalEscanos) * 100}%; background-color: ${fuerza.color};`}
+                        title={`${fuerza.fuerza}: ${fuerza.escanos} representante(s)`}
+                    ></div>
+                ))}
+            </div>
 
-            /* Títulos */
-            h2 {
-                font-family: 'Sifonn', sans-serif;
-                font-size: clamp(2.2rem, 7vw, 4.2rem);
-                text-transform: uppercase;
-                line-height: 0.85;
-                margin-bottom: 2rem;
-                color: #000;
-            }
-
-            .subtitle-kicker {
-                font-family: monospace;
-                font-size: 0.85rem;
-                text-transform: uppercase;
-                color: #666;
-                letter-spacing: 0.1em;
-                margin-bottom: 0.5rem;
-                display: block;
-            }
-
-            .manifesto-box {
-                border-left: 10px solid #000;
-                padding: clamp(1.5rem, 4vw, 2.5rem);
-                background: #f4f4f4;
-                margin-bottom: 4rem;
-                font-family: monospace;
-                font-size: 1.15rem;
-                border-top: 2px solid #111;
-                border-right: 2px solid #111;
-                border-bottom: 2px solid #111;
-                box-shadow: 4px 4px 0px #111;
-                border-radius: 4px;
-            }
-
-            .manifesto-box p {
-                margin: 0;
-                line-height: 1.6;
-            }
-
-            /* Cuadrícula de Cargos */
-            .mesa-grid {
-                display: grid;
-                grid-template-columns: repeat(12, 1fr);
-                gap: 2rem;
-                margin-bottom: 5rem;
-            }
-
-            .mesa-card {
-                grid-column: span 6;
-                padding: clamp(2rem, 5vw, 3rem);
-                color: #fff;
-                border: 2px solid #111;
-                border-radius: 8px;
-                box-shadow: 6px 6px 0px #111;
-                transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                display: flex;
-                flex-direction: column;
-                min-height: 280px;
-            }
-
-            .mesa-card:hover {
-                transform: translate(-3px, -3px);
-                box-shadow: 8px 8px 0px #ff0000;
-                border-color: #ff0000;
-            }
-
-            .mesa-card--full {
-                grid-column: span 12;
-            }
-
-            .mesa-card .cargo {
-                font-family: 'Sifonn', sans-serif;
-                font-size: 1.1rem;
-                border-bottom: 2px solid #ff0000;
-                display: inline-block;
-                margin-bottom: 1.5rem;
-                width: fit-content;
-                letter-spacing: 0.05em;
-            }
-
-            .mesa-card:hover .cargo {
-                border-color: #fff;
-            }
-
-            .mesa-card .nombre {
-                font-family: 'lora', sans-serif;
-                font-size: 2rem;
-                font-weight: 900;
-                display: block;
-                margin-bottom: 1rem;
-                text-transform: uppercase;
-                line-height: 1.1;
-            }
-
-            .mesa-card p {
-                opacity: 0.9;
-                font-size: 0.92rem;
-                line-height: 1.6;
-                margin: 0;
-                flex-grow: 1;
-            }
-
-            /* Sección Estatutos / Objetivos */
-            .vision-section {
-                border-top: 0.45rem solid #111;
-                padding-top: 2rem;
-                margin-top: 4rem;
-            }
-
-            .vision-grid {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                gap: 3rem;
-                margin-top: 2rem;
-            }
-
-            .vision-block h3 {
-                font-family: 'Sifonn', sans-serif;
-                font-size: 1.6rem;
-                text-transform: uppercase;
-                color: #ff0000;
-                margin-bottom: 1rem;
-            }
-
-            .vision-block p {
-                font-size: 0.95rem;
-                line-height: 1.6;
-                color: #333;
-            }
-
-            /* Ajustes Responsivos */
-            @media (max-width: 820px) {
-                .mesa-card {
-                    grid-column: span 12;
-                    min-height: auto;
-                }
-            }
-        </style>
-    </head>
-
-    <body>
-        <Header />
-        <main>
-            <header>
-                <span class="subtitle-kicker">Federación de Estudiantes de la Universidad de Chile</span>
-                <h2>Mesa Directiva</h2>
-                
-                <div class="manifesto-box">
-                    <p><strong>[LEMA O CONSIGNA DE LA GESTIÓN ACTUAL]:</strong> "Por una federación construida desde las bases, activa en las luchas sociales y comprometida con el desarrollo de una educación pública y democrática al servicio del pueblo."</p>
-                </div>
-            </header>
-
-            <!-- GRILLA DE INTEGRANTES DE LA MESA DIRECTIVA -->
-            <section class="mesa-grid">
-                {mesaDirectiva.map((item, idx) => (
-                    <div class={`mesa-card ${idx === 0 ? 'mesa-card--full' : ''}`} style={`background: ${item.color};`}>
-                        <span class="cargo">{item.cargo}</span>
-                        <span class="nombre">{item.nombre}</span>
-                        <p>{item.desc}</p>
+            <div class="legend-grid">
+                {composicionConsejo.map((fuerza) => (
+                    <div class="legend-item">
+                        <div class="legend-color-box" style={`background-color: ${fuerza.color};`}></div>
+                        <span><strong>{fuerza.escanos}</strong> {fuerza.fuerza}</span>
                     </div>
                 ))}
-            </section>
+            </div>
+        </section>
 
-            <!-- OBJETIVOS GENERALES DE LA GESTIÓN -->
-            <section class="vision-section">
-                <h2>Líneas de Trabajo Generales</h2>
-                <div class="vision-grid">
-                    <div class="vision-block">
-                        <h3>Democratización</h3>
-                        <p>[Insertar aquí la planificación estratégica sobre la democratización institucional y la articulación orgánica del estudiantado. Espacio para redactar objetivos de base y reforma estatutaria.]</p>
+        <section>
+            <span class="subtitle-kicker">Directorio de Consejeros</span>
+            
+            <div class="filter-band">
+                <button class="filter-btn active" data-facultad="all">Todas las Facultades</button>
+                {facultadesList.map((facultad) => (
+                    <button class="filter-btn" data-facultad={facultad}>{facultad}</button>
+                ))}
+            </div>
+
+            <div class="consejeres-grid" id="consejeres-grid">
+                {consejeres.map((consejero) => (
+                    <div
+                        class="consejero-card brutalist-box"
+                        data-facultad={consejero.facultad}
+                        style={`--hover-color: ${consejero.color};`}
+                    >
+                        <div>
+                            <span class="consejero-bloque" style={`background: ${consejero.color};`}>
+                                {consejero.bloque}
+                            </span>
+                            <h4>{consejero.nombre}</h4>
+                            <p class="consejero-cargo">{consejero.cargo}</p>
+                        </div>
+                        <span class="consejero-facultad">{consejero.facultad}</span>
                     </div>
-                    <div class="vision-block">
-                        <h3>Bienestar Estudiantil</h3>
-                        <p>[Insertar aquí las propuestas y líneas de acción referidas a la salud mental, becas de mantención, alimentación Junaeb y calidad de vida en los distintos campus universitarios.]</p>
-                    </div>
-                    <div class="vision-block">
-                        <h3>Vinculación Territorial</h3>
-                        <p>[Espacio asignado para describir la proyección estudiantil hacia el medio social, el trabajo voluntario, la articulación con organizaciones vecinales y de trabajadores.]</p>
-                    </div>
-                </div>
-            </section>
-        </main>
-        <Footer />
-    </body>
-</html>
+                ))}
+            </div>
+        </section>
+    </main>
+
+    <style>
+        main {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: clamp(2rem, 8vw, 4rem) 5%;
+            box-sizing: border-box;
+        }
+
+        h2 { font-family: 'creato', sans-serif; font-size: clamp(2.2rem, 7vw, 4rem); text-transform: uppercase; line-height: 0.85; margin-bottom: 2rem; color: #000; }
+        h3 { font-family: 'creato', sans-serif; font-size: clamp(1.5rem, 4vw, 2.5rem); text-transform: uppercase; line-height: 1; margin-bottom: 1.5rem; color: #000; }
+        .subtitle-kicker { font-family: monospace; font-size: 0.85rem; text-transform: uppercase; color: #666; letter-spacing: 0.1em; margin-bottom: 0.5rem; display: block; }
+        
+        .brutalist-box { border: 2px solid #111; box-shadow: 4px 4px 0px #111; background: #fff; }
+        .intro-box { border-left: 10px solid #000; padding: clamp(1.5rem, 4vw, 2rem); background: #f4f4f4; margin-bottom: 4rem; font-family: monospace; font-size: 1.1rem; border-top: 2px solid #111; border-right: 2px solid #111; border-bottom: 2px solid #111; box-shadow: 4px 4px 0px #111; border-radius: 4px; }
+
+        .graph-section { padding: clamp(1.5rem, 4vw, 2.5rem); margin-bottom: 4rem; }
+        .graph-bar { display: flex; height: 45px; border: 2px solid #111; width: 100%; margin-bottom: 2rem; }
+        .graph-segment { height: 100%; border-right: 2px solid #111; transition: opacity 0.2s; }
+        .graph-segment:last-child { border-right: none; }
+        .graph-segment:hover { opacity: 0.8; }
+        .legend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.2rem; }
+        .legend-item { display: flex; align-items: center; gap: 0.75rem; font-family: monospace; font-size: 0.9rem; }
+        .legend-color-box { width: 24px; height: 24px; border: 2px solid #111; }
+
+        .filter-band { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 3rem; border-bottom: 2px solid #111; padding-bottom: 1.5rem; }
+        .filter-btn { background: #fff; border: 2px solid #111; padding: 0.45rem 1rem; font-family: monospace; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.2s ease; }
+        .filter-btn.active, .filter-btn:hover { background: #ff0000; color: #fff; border-color: #ff0000; transform: translateY(-2px); box-shadow: 2px 2px 0px #111; }
+
+        .consejeres-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 2.2rem; }
+        .consejero-card { border-radius: 8px; padding: 2rem; display: flex; flex-direction: column; justify-content: space-between; min-height: 240px; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .consejero-card.hidden { display: none; }
+        .consejero-card:hover { transform: translate(-4px, -4px); box-shadow: 6px 6px 0px var(--hover-color) !important; border-color: var(--hover-color) !important; }
+        .consejero-bloque { font-family: 'creato', sans-serif; font-size: 0.85rem; text-transform: uppercase; margin-bottom: 1rem; display: inline-block; width: fit-content; padding: 0.15rem 0.6rem; color: #fff; border-radius: 4px; border: 2px solid #111; box-shadow: 2px 2px 0px #111; }
+        .consejero-card h4 { font-family: 'lora', sans-serif; font-weight: 800; font-size: 1.2rem; margin: 0 0 0.5rem 0; color: #111; line-height: 1.25; }
+        .consejero-cargo { font-family: monospace; font-size: 0.82rem; color: #555; margin: 0 0 1rem 0; line-height: 1.4; }
+        .consejero-facultad { font-family: monospace; font-size: 0.72rem; text-transform: uppercase; background: #eee; color: #333; padding: 0.18rem 0.45rem; width: fit-content; margin-top: auto; border-radius: 2px; }
+
+        @media (max-width: 640px) { .consejeres-grid { grid-template-columns: 1fr; } }
+    </style>
+
+    <script>
+        function initFilters() {
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const cards = document.querySelectorAll('.consejero-card');
+
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const facultadFilter = btn.getAttribute('data-facultad');
+                    cards.forEach(card => {
+                        if (facultadFilter === 'all' || card.getAttribute('data-facultad') === facultadFilter) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        }
+
+        // Run on initial load and on every page transition swap
+        document.addEventListener('astro:page-load', initFilters);
+    </script>
+</Layout>
