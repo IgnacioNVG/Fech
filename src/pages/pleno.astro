@@ -23,12 +23,17 @@ const composicionPleno = [
 const totalEscanos = composicionPleno.reduce((acc, curr) => acc + curr.escanos, 0);
 
 const consejeres = [
-    { nombre: "Angie Caicheo", facultad: "Facultad de Derecho", bloque: "Juventud Socialista", color: "#d9534f" },
-    { nombre: "Carlos Fuentealba R.", facultad: "Facultad de Ciencias", bloque: "Frente de Centro", color: "#005b96" },
-    { nombre: "Daniela Paz Gomez", facultad: "Facultad de Filosofía y Humanidades", bloque: "Movimiento Autónomo", color: "#2e8b57" },
-    { nombre: "Esteban Soto M.", facultad: "Facultad de Medicina", bloque: "Independientes", color: "#e5a93b" },
-    { nombre: "Florencia Silva P.", facultad: "FCFM", bloque: "Izquierda Estudiantil", color: "#d9534f" },
-    { nombre: "Gabriel Osorio L.", facultad: "Facultad de Arquitectura", bloque: "Frente de Centro", color: "#005b96" }
+    { nombre: "Sofía Vallejos Salamanca", facultad: "Facultad de Arquitectura y Urbanismo", bloque: "JJCC", color: "#d9534f" },
+    { nombre: "Violeta Mlynarz Greibe", facultad: "Facultad de Arquitectura y Urbanismo", bloque: "JJCC", color: "#d9534f" },
+    { nombre: "Camila Zuñiga Silva", facultad: "Facultad de Arquitectura y Urbanismo", bloque: "Frente Amplio", color: "#d9534f" },        { nombre: "Angie Caicheo", facultad: "Facultad de Derecho", bloque: "Juventud Socialista", color: "#d9534f" },
+    { nombre: "Matías Peñaloza Abedrapo", facultad: "Facultad de Arquitectura y Urbanismo", bloque: "JJCC", color: "#d9534f" },
+    { nombre: "Josefina del Rio", facultad: "Facultad de Artes Encinas", bloque: "Independiente", color: "#d9534f" },
+    { nombre: "Camilo Escudero", facultad: "Facultad de Artes Centro", bloque: "Independiente", color: "#d9534f" },
+	{ nombre: "Mario Elgueta", facultad: "Facultad de Ciencias", bloque: "Independiente", color: "#d9534f" },
+	{ nombre: "Eileen Muller", facultad: "Facultad de Ciencias Agronómicas", bloque: "Independiente", color: "#d9534f" },
+	{ nombre: "Angie Caicheo", facultad: "Facultad de Derecho", bloque: "Juventud Socialista", color: "#d9534f" },
+
+
 ];
 
 const facultadesList = [...new Set(consejeres.map(c => c.facultad))];
